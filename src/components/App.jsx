@@ -1,16 +1,17 @@
+import { Route, Routes } from 'react-router';
+
+import ShopsPage from 'pages/ShopsPage';
+import Navigation from './Navigation/Navigation';
+import ShoppingCart from './ShoppingCart/ShoppingCart';
 export const App = () => {
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+    <>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<ShopsPage />} />
+        <Route path="/cart" element={<ShoppingCart />} />
+
+      </Routes>
+    </>
   );
 };
