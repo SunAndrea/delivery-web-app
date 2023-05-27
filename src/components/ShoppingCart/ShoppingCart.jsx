@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
 import css from './ShoppingCart.module.css';
 import { postOrder } from 'API/api';
 const ShoppingCart = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-  });
   const [cartItems, setCartItems] = useState(
     JSON.parse(localStorage.getItem('cart')) || []
   );
@@ -38,11 +35,6 @@ const ShoppingCart = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCartItems));
   };
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
-  };
-
   const handleDeleteItem = productId => {
     const updatedCartItems = cartItems.filter(item => item._id !== productId);
     setCartItems(updatedCartItems);
@@ -50,65 +42,117 @@ const ShoppingCart = () => {
     localStorage.setItem('cart', JSON.stringify(updatedCartItems));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const initialValues = {
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+  };
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    phone: Yup.string().required('Phone is required'),
+    address: Yup.string().required('Address is required'),
+  });
+
+  const handleSubmit = async values => {
     const data = {
-      deliveryData: formData,
+      deliveryData: values,
       productsData: cartItems,
       totalPrice,
     };
     await postOrder(data);
     setCartItems([]);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-    });
+
     setTotalPrice(0);
-    localStorage.setItem('cart', null);
+    localStorage.removeItem('cart');
+
+    localStorage.setItem('selectedShop', null);
+    values.name = '';
+    values.email = '';
+    values.phone = '';
+    values.address = '';
     navigate('/');
   };
 
   return (
     <div className={css.wrapper}>
-      <form onSubmit={handleSubmit} className={css.form}>
-        <label className={css.label}>Name</label>
-        <input
-          className={css.input}
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <label className={css.label}>Email</label>
-        <input
-          className={css.input}
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <label className={css.label}>Phone</label>
-        <input
-          className={css.input}
-          type="tel"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-        <label className={css.label}>Address</label>
-        <input
-          className={css.input}
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-        />
-        <button className={css.button} type="submit">
-          send
-        </button>
-      </form>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        <Form className={css.form}>
+          <label className={css.label} htmlFor="name">
+            Name
+          </label>
+          <Field
+            className={css.input}
+            id="name"
+            name="name"
+            placeholder="Jane"
+          />
+          <ErrorMessage
+            name="name"
+            component="div"
+            className={css.errorMessage}
+          />
+
+          <label className={css.label} htmlFor="email">
+            Email
+          </label>
+          <Field
+            className={css.input}
+            id="email"
+            type="email"
+            name="email"
+            placeholder="jane@acme.com"
+          />
+          <ErrorMessage
+            name="email"
+            component="div"
+            className={css.errorMessage}
+          />
+
+          <label className={css.label} htmlFor="phone">
+            Phone
+          </label>
+          <Field
+            className={css.input}
+            id="phone"
+            name="phone"
+            placeholder="+380999999999"
+          />
+          <ErrorMessage
+            name="phone"
+            component="div"
+            className={css.errorMessage}
+          />
+
+          <label className={css.label} htmlFor="address">
+            Address
+          </label>
+          <Field
+            className={css.input}
+            id="address"
+            name="address"
+            placeholder="123 Main Street, New York"
+          />
+          <ErrorMessage
+            name="address"
+            component="div"
+            className={css.errorMessage}
+          />
+
+          {cartItems.length > 0 && (
+            <button className={css.button} type="submit">
+              Submit
+            </button>
+          )}
+        </Form>
+      </Formik>
+
       <div style={{ position: 'relative' }}>
         <ul className={css.list}>
           {cartItems.map(({ _id, imgURL, name, quantity, price }) => {
@@ -119,16 +163,32 @@ const ShoppingCart = () => {
                   src={imgURL}
                   alt="product"
                   width={250}
-                  height={209}
                 />
-                <h2>{name}</h2>
-                <div>
-                  <input
-                    onChange={e => handleQuantityChange(_id, e.target.value)}
-                    type="number"
-                    min="1"
-                    value={quantity}
-                  />
+                <p>{name}</p>
+                <div className={css.descriptionWrapper}>
+                  <div className={css.inputContainer}>
+                    <button
+                      onClick={() => handleQuantityChange(_id, quantity - 1)}
+                      className={css.buttonInput}
+                      disabled={quantity === 1 && true}
+                    >
+                      -
+                    </button>
+                    <input
+                      className={css.quantityInput}
+                      onChange={e => handleQuantityChange(_id, e.target.value)}
+                      type="number"
+                      min="1"
+                      value={quantity}
+                      readOnly
+                    />
+                    <button
+                      onClick={() => handleQuantityChange(_id, quantity + 1)}
+                      className={css.buttonInput}
+                    >
+                      +
+                    </button>
+                  </div>
                   <p>{price * quantity} UAH</p>
                   <button
                     style={{ backgroundColor: 'red' }}

@@ -23,7 +23,7 @@ const Navigation = () => {
       }}
     >
       <Link to="/">Shop</Link>
-      <Link to="/cart">Shoping Cart</Link>
+      <Link to="/cart">Shopping Cart</Link>
     </header>
   );
 };

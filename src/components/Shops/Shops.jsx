@@ -6,7 +6,7 @@ const shopsNames = [
   { name: 'Burger King', id: '3' },
 ];
 
-const Shops = ({ onClick }) => {
+const Shops = ({ onClick, cartItems }) => {
   const [selectedShop, setSelectedShop] = useState(
     JSON.parse(localStorage.getItem('selectedShop')) || null
   );
@@ -16,7 +16,6 @@ const Shops = ({ onClick }) => {
     onClick(shopName);
     localStorage.setItem('selectedShop', JSON.stringify(shopName));
   };
-
   return (
     <div className={css.container}>
       <h2>shops</h2>
@@ -26,7 +25,11 @@ const Shops = ({ onClick }) => {
             <button
               onClick={() => handleButtonClick(shop.name)}
               className={css.button}
-              disabled={selectedShop !== shop.name && selectedShop !== null}
+              disabled={
+                selectedShop !== shop.name &&
+                selectedShop !== null &&
+                cartItems.length > 0
+              }
             >
               {shop.name}
             </button>

@@ -9,6 +9,14 @@ const ShopsPage = () => {
   const [selectedShop] = useState(
     JSON.parse(localStorage.getItem('selectedShop')) || null
   );
+  const [cartItems, setCartItems] = useState(
+    JSON.parse(localStorage.getItem('cart')) || []
+  );
+
+  const handleCarts = data => {
+    setCartItems(data);
+  };
+
   useEffect(() => {
     if (selectedShop) {
       onShopClick(selectedShop);
@@ -20,8 +28,11 @@ const ShopsPage = () => {
   };
   return (
     <div style={{ display: 'flex' }}>
-      <Shops onClick={onShopClick}></Shops>
-      <ProductsList products={products}></ProductsList>
+      <Shops cartItems={cartItems} onClick={onShopClick}></Shops>
+      <ProductsList
+        handleCarts={handleCarts}
+        products={products}
+      ></ProductsList>
     </div>
   );
 };

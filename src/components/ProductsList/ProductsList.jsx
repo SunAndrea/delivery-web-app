@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import css from './ProductsList.module.css';
 
-const ProductsList = ({ products }) => {
+const ProductsList = ({ products, handleCarts }) => {
   // eslint-disable-next-line no-unused-vars
   const [addedToCart, setAddedToCart] = useState(
     JSON.parse(localStorage.getItem('cart')) || []
@@ -14,6 +14,7 @@ const ProductsList = ({ products }) => {
     cartItems.push(product);
     localStorage.setItem('cart', JSON.stringify(cartItems));
     setAddedToCart(cartItems);
+    handleCarts(cartItems);
   };
 
   const isAddedToCart = product => {
