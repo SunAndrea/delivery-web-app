@@ -164,7 +164,7 @@ const ShoppingCart = () => {
                   alt="product"
                   width={250}
                 />
-                <p>{name}</p>
+                <p style={{ textAlign: 'center' }}>{name}</p>
                 <div className={css.descriptionWrapper}>
                   <div className={css.inputContainer}>
                     <button
