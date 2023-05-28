@@ -35,7 +35,7 @@ const ProductsList = ({ products, handleCarts }) => {
                 alt="product"
                 width={250}
               />
-              <p>{product.name}</p>
+              <p style={{ textAlign: 'center' }}>{product.name}</p>
               <p>{product.price} UAH</p>
 
               {isAddedToCart(product) ? (
