@@ -1,0 +1,53 @@
+.container {
+    margin: 20px;
+  }
+  
+  .label {
+    font-weight: bold;
+  }
+  
+  .input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+  }
+  .historyList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .historyItem {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .historyProduct {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 5px;
+  }
+  
+  .historyImage {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .historyName {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .historyQuantity {
+    margin-bottom: 0;
+    margin-left: 10px;
+  }
+  
+  .historyTotalPrice {
+    font-weight: bold;
+  }
